@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кабинет депутата</title>
+    <style>
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Стили экрана загрузки */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loading-logo {
+            width: 200px;
+            height: 200px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            border: 2px solid #ccc;
+        }
+        
+        .loading-text {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        /* Стили формы входа */
+        .login-form {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #1a252f;
+        }
+        
+        /* Стили главного интерфейса */
+        .main-interface {
+            display: none;
+        }
+        
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-name {
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.3s;
+        }
+        
+        .user-name:hover {
+            color: #ecf0f1;
+        }
+        
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        /* Вкладки навигации */
+        .nav-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .nav-tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .nav-tab.active {
+            border-bottom: 2px solid #2c3e50;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        
+        .nav-tab:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* Контент вкладок */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Стили каталогов */
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .catalog-item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .catalog-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .catalog-item h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .catalog-item p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Стили панели модератора */
+        .moderator-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .panel-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .panel-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .panel-tab.active {
+            border-bottom: 2px solid #2c3e50;
+            font-weight: bold;
+        }
+        
+        .panel-content {
+            display: none;
+        }
+        
+        .panel-content.active {
+            display: block;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .user-list, .catalog-list, .events-list {
+            margin-top: 20px;
+        }
+        
+        .user-item, .catalog-item-admin, .event-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-actions, .catalog-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        
+        .btn-success {
+            background-color: #27ae60;
+        }
+        
+        /* Стили личного кабинета */
+        .profile-panel {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #3498db;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        
+        .profile-info h2 {
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .profile-info p {
+            color: #7f8c8d;
+        }
+        
+        .profile-details {
+            margin-bottom: 30px;
+        }
+        
+        .detail-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            width: 150px;
+            color: #2c3e50;
+        }
+        
+        .detail-value {
+            flex: 1;
+        }
+        
+        .password-form {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .password-form h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .catalog-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .nav-tab {
+                flex: 1;
+                text-align: center;
+                min-width: 120px;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .detail-item {
+                flex-direction: column;
+            }
+            
+            .detail-label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Экран загрузки -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">
+            <!-- Здесь будет герб Екатеринбурга -->
+            <span>Герб Екатеринбурга</span>
+        </div>
+        <div class="loading-text">Загрузка...</div>
+    </div>
+
+    <!-- Форма входа -->
+    <div class="container" id="loginForm">
+        <div class="login-form">
+            <h2>Вход в кабинет депутата</h2>
+            <div class="form-group">
+                <label for="username">Логин:</label>
+                <input type="text" id="username" placeholder="Введите логин">
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" placeholder="Введите пароль">
+            </div>
+            <div class="form-group">
+                <label for="userType">Тип пользователя:</label>
+                <select id="userType">
+                    <option value="deputy">Депутат</option>
+                    <option value="assistant">Помощник депутата</option>
+                    <option value="moderator">Модератор</option>
+                </select>
+            </div>
+            <button class="btn" id="loginBtn">Войти</button>
+        </div>
+    </div>
+
+    <!-- Главный интерфейс -->
+    <div class="main-interface" id="mainInterface">
+        <div class="header">
+            <div class="container header-content">
+                <h1>Кабинет депутата</h1>
+                <div class="user-info">
+                    <span class="user-name" id="userName">Пользователь</span>
+                    <button class="logout-btn" id="logoutBtn">Выйти</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Навигационные вкладки -->
+            <div class="nav-tabs">
+                <div class="nav-tab active" data-tab="catalogs">Каталоги</div>
+                <div class="nav-tab" data-tab="moderator">Панель модератора</div>
+                <div class="nav-tab" data-tab="profile">Личный кабинет</div>
+            </div>
+
+            <!-- Контент вкладки "Каталоги" -->
+            <div class="tab-content active" id="catalogsTab">
+                <h2>Каталоги</h2>
+                <div class="catalog-grid" id="catalogGrid">
+                    <!-- Каталоги будут добавляться динамически -->
+                </div>
+            </div>
+
+            <!-- Контент вкладки "Панель модератора" -->
+            <div class="tab-content" id="moderatorTab">
+                <div class="moderator-panel">
+                    <h2>Панель модератора</h2>
+                    <div class="panel-tabs">
+                        <div class="panel-tab active" data-panel="catalogs">Управление каталогами</div>
+                        <div class="panel-tab" data-panel="users">Управление пользователями</div>
+                        <div class="panel-tab" data-panel="events">Отметка мероприятий</div>
+                    </div>
+
+                    <div class="panel-content active" id="catalogsPanel">
+                        <h3>Добавление нового каталога</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="catalogName">Название каталога:</label>
+                                <input type="text" id="catalogName" placeholder="Введите название">
+                            </div>
+                            <div class="form-group">
+                                <label for="catalogDescription">Описание:</label>
+                                <input type="text" id="catalogDescription" placeholder="Введите описание">
+                            </div>
+                        </div>
+                        <button class="btn" id="addCatalogBtn">Добавить каталог</button>
+
+                        <div class="catalog-list" id="catalogList">
+                            <!-- Список каталогов для управления -->
+                        </div>
+                    </div>
+
+                    <div class="panel-content" id="usersPanel">
+                        <h3>Добавление нового пользователя</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newUserName">Имя пользователя:</label>
+                                <input type="text" id="newUserName" placeholder="Введите имя">
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserLogin">Логин:</label>
+                                <input type="text" id="newUserLogin" placeholder="Введите логин">
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserPassword">Пароль:</label>
+                                <input type="password" id="newUserPassword" placeholder="Введите пароль">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newUserType">Тип пользователя:</label>
+                                <select id="newUserType">
+                                    <option value="deputy">Депутат</option>
+                                    <option value="assistant">Помощник депутата</option>
+                                    <option value="moderator">Модератор</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserEmail">Служебная почта:</label>
+                                <input type="email" id="newUserEmail" placeholder="Введите почту">
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserPhone">Служебный телефон:</label>
+                                <input type="text" id="newUserPhone" placeholder="Введите телефон">
+                            </div>
+                        </div>
+                        <button class="btn" id="addUserBtn">Добавить пользователя</button>
+
+                        <div class="user-list" id="userList">
+                            <!-- Список пользователей для управления -->
+                        </div>
+                    </div>
+
+                    <div class="panel-content" id="eventsPanel">
+                        <h3>Отметка посещения мероприятий</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="selectUser">Выберите пользователя:</label>
+                                <select id="selectUser">
+                                    <!-- Пользователи будут добавляться динамически -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="selectEvent">Выберите мероприятие:</label>
+                                <select id="selectEvent">
+                                    <!-- Мероприятия будут добавляться динамически -->
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn" id="markAttendanceBtn">Отметить посещение</button>
+
+                        <div class="events-list" id="eventsList">
+                            <!-- Список мероприятий с отметками посещения -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Контент вкладки "Личный кабинет" -->
+            <div class="tab-content" id="profileTab">
+                <div class="profile-panel">
+                    <div class="profile-header">
+                        <div class="profile-avatar" id="userAvatar">
+                            <!-- Аватар будет генерироваться из инициалов -->
+                        </div>
+                        <div class="profile-info">
+                            <h2 id="profileUserName">Имя пользователя</h2>
+                            <p id="profileUserRole">Роль пользователя</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-details">
+                        <h3>Личная информация</h3>
+                        <div class="detail-item">
+                            <div class="detail-label">Логин:</div>
+                            <div class="detail-value" id="profileLogin">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Служебная почта:</div>
+                            <div class="detail-value" id="profileEmail">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Служебный телефон:</div>
+                            <div class="detail-value" id="profilePhone">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Тип пользователя:</div>
+                            <div class="detail-value" id="profileType">-</div>
+                        </div>
+                    </div>
+
+                    <div class="password-form">
+                        <h3>Смена пароля</h3>
+                        <div class="form-group">
+                            <label for="currentPassword">Текущий пароль:</label>
+                            <input type="password" id="currentPassword" placeholder="Введите текущий пароль">
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">Новый пароль:</label>
+                            <input type="password" id="newPassword" placeholder="Введите новый пароль">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Подтвердите пароль:</label>
+                            <input type="password" id="confirmPassword" placeholder="Повторите новый пароль">
+                        </div>
+                        <button class="btn" id="changePasswordBtn">Сменить пароль</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Данные приложения
+        const appData = {
+            // Каталоги по умолчанию
+            catalogs: [
+                { id: 1, name: "Повестки заседаний 3C", description: "Повестки заседаний законодательного собрания" },
+                { id: 2, name: "Прочие повестки", description: "Дополнительные повестки и документы" },
+                { id: 3, name: "Новостная лента", description: "Актуальные новости и события" },
+                { id: 4, name: "План мероприятий", description: "Календарь мероприятий и планы" },
+                { id: 5, name: "Паспорт закона", description: "Документы и паспорта законов" },
+                { id: 6, name: "Указы губернатора", description: "Указы и распоряжения губернатора" },
+                { id: 7, name: "Постановления Правительства", description: "Постановления и решения правительства" },
+                { id: 8, name: "Исполнение бюджета", description: "Отчеты об исполнении бюджета" },
+                { id: 9, name: "Аналитические материалы", description: "Аналитические отчеты и исследования" },
+                { id: 10, name: "Материалы КС", description: "Материалы Конституционного суда" },
+                { id: 11, name: "Гос. программы", description: "Государственные программы и проекты" },
+                { id: 12, name: "Внешние ресурсы", description: "Ссылки на внешние ресурсы" },
+                { id: 13, name: "Совет", description: "Материалы совета и комитетов" },
+                { id: 14, name: "Сервисы", description: "Дополнительные сервисы и инструменты" }
+            ],
+            
+            // Пользователи по умолчанию
+            users: [
+                { 
+                    id: 1, 
+                    name: "Иванов И.И.", 
+                    login: "ivanov", 
+                    password: "123", 
+                    type: "deputy",
+                    email: "i.ivanov@permkray.ru",
+                    phone: "+7 (342) 123-45-67"
+                },
+                { 
+                    id: 2, 
+                    name: "Петров П.П.", 
+                    login: "petrov", 
+                    password: "123", 
+                    type: "assistant",
+                    email: "p.petrov@permkray.ru",
+                    phone: "+7 (342) 234-56-78"
+                },
+                { 
+                    id: 3, 
+                    name: "Сидоров С.С.", 
+                    login: "sidorov", 
+                    password: "123", 
+                    type: "moderator",
+                    email: "s.sidorov@permkray.ru",
+                    phone: "+7 (342) 345-67-89"
+                }
+            ],
+            
+            // Мероприятия по умолчанию
+            events: [
+                { id: 1, name: "Заседание комитета по бюджету", date: "2023-10-15" },
+                { id: 2, name: "Встреча с избирателями", date: "2023-10-20" },
+                { id: 3, name: "Совещание по вопросам ЖКХ", date: "2023-10-25" }
+            ],
+            
+            // Посещения мероприятий
+            attendance: [
+                { userId: 1, eventId: 1, attended: true },
+                { userId: 1, eventId: 2, attended: false },
+                { userId: 2, eventId: 1, attended: true }
+            ],
+            
+            // Документы для каталогов
+            catalogDocuments: {},
+            
+            // Текущий пользователь
+            currentUser: null
+        };
+
+        // DOM элементы
+        const elements = {
+            loadingScreen: document.getElementById('loadingScreen'),
+            loginForm: document.getElementById('loginForm'),
+            mainInterface: document.getElementById('mainInterface'),
+            catalogGrid: document.getElementById('catalogGrid'),
+            userName: document.getElementById('userName'),
+            logoutBtn: document.getElementById('logoutBtn'),
+            loginBtn: document.getElementById('loginBtn'),
+            username: document.getElementById('username'),
+            password: document.getElementById('password'),
+            userType: document.getElementById('userType'),
+            navTabs: document.querySelectorAll('.nav-tab'),
+            tabContents: document.querySelectorAll('.tab-content'),
+            panelTabs: document.querySelectorAll('.panel-tab'),
+            panelContents: document.querySelectorAll('.panel-content'),
+            addCatalogBtn: document.getElementById('addCatalogBtn'),
+            catalogName: document.getElementById('catalogName'),
+            catalogDescription: document.getElementById('catalogDescription'),
+            catalogList: document.getElementById('catalogList'),
+            addUserBtn: document.getElementById('addUserBtn'),
+            newUserName: document.getElementById('newUserName'),
+            newUserLogin: document.getElementById('newUserLogin'),
+            newUserPassword: document.getElementById('newUserPassword'),
+            newUserType: document.getElementById('newUserType'),
+            newUserEmail: document.getElementById('newUserEmail'),
+            newUserPhone: document.getElementById('newUserPhone'),
+            userList: document.getElementById('userList'),
+            markAttendanceBtn: document.getElementById('markAttendanceBtn'),
+            selectUser: document.getElementById('selectUser'),
+            selectEvent: document.getElementById('selectEvent'),
+            eventsList: document.getElementById('eventsList'),
+            profileUserName: document.getElementById('profileUserName'),
+            profileUserRole: document.getElementById('profileUserRole'),
+            profileLogin: document.getElementById('profileLogin'),
+            profileEmail: document.getElementById('profileEmail'),
+            profilePhone: document.getElementById('profilePhone'),
+            profileType: document.getElementById('profileType'),
+            userAvatar: document.getElementById('userAvatar'),
+            currentPassword: document.getElementById('currentPassword'),
+            newPassword: document.getElementById('newPassword'),
+            confirmPassword: document.getElementById('confirmPassword'),
+            changePasswordBtn: document.getElementById('changePasswordBtn')
+        };
+
+        // Инициализация приложения
+        function initApp() {
+            // Загрузка сохраненных данных из localStorage
+            loadSavedData();
+            
+            // Имитация загрузки
+            setTimeout(() => {
+                elements.loadingScreen.classList.add('hidden');
+                
+                // Проверяем, есть ли сохраненный пользователь
+                const savedUser = localStorage.getItem('currentUser');
+                if (savedUser) {
+                    appData.currentUser = JSON.parse(savedUser);
+                    elements.userName.textContent = appData.currentUser.name;
+                    elements.loginForm.style.display = 'none';
+                    elements.mainInterface.style.display = 'block';
+                    loadCatalogs();
+                    loadProfileData();
+                    
+                    if (appData.currentUser.type === 'moderator') {
+                        loadModeratorData();
+                    }
+                } else {
+                    showLoginForm();
+                }
+            }, 2000);
+
+            // Настройка обработчиков событий
+            setupEventListeners();
+        }
+
+        // Загрузка сохраненных данных
+        function loadSavedData() {
+            const savedCatalogs = localStorage.getItem('catalogs');
+            const savedUsers = localStorage.getItem('users');
+            const savedDocuments = localStorage.getItem('catalogDocuments');
+            
+            if (savedCatalogs) appData.catalogs = JSON.parse(savedCatalogs);
+            if (savedUsers) appData.users = JSON.parse(savedUsers);
+            if (savedDocuments) appData.catalogDocuments = JSON.parse(savedDocuments);
+        }
+
+        // Сохранение данных
+        function saveData() {
+            localStorage.setItem('catalogs', JSON.stringify(appData.catalogs));
+            localStorage.setItem('users', JSON.stringify(appData.users));
+            localStorage.setItem('catalogDocuments', JSON.stringify(appData.catalogDocuments));
+            if (appData.currentUser) {
+                localStorage.setItem('currentUser', JSON.stringify(appData.currentUser));
+            }
+        }
+
+        // Настройка обработчиков событий
+        function setupEventListeners() {
+            // Вход в систему
+            elements.loginBtn.addEventListener('click', handleLogin);
+            
+            // Выход из системы
+            elements.logoutBtn.addEventListener('click', handleLogout);
+            
+            // Переключение основных вкладок
+            elements.navTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    switchMainTab(tabId);
+                });
+            });
+            
+            // Переключение вкладок панели модератора
+            elements.panelTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const panelId = tab.getAttribute('data-panel');
+                    switchPanelTab(panelId);
+                });
+            });
+            
+            // Клик по имени пользователя для перехода в личный кабинет
+            elements.userName.addEventListener('click', () => {
+                switchMainTab('profile');
+            });
+            
+            // Добавление каталога
+            elements.addCatalogBtn.addEventListener('click', addCatalog);
+            
+            // Добавление пользователя
+            elements.addUserBtn.addEventListener('click', addUser);
+            
+            // Отметка посещения мероприятия
+            elements.markAttendanceBtn.addEventListener('click', markAttendance);
+            
+            // Смена пароля
+            elements.changePasswordBtn.addEventListener('click', changePassword);
+        }
+
+        // Показать форму входа
+        function showLoginForm() {
+            elements.loginForm.style.display = 'block';
+            elements.mainInterface.style.display = 'none';
+        }
+
+        // Обработка входа
+        function handleLogin() {
+            const username = elements.username.value;
+            const password = elements.password.value;
+            const userType = elements.userType.value;
+            
+            // Простая проверка (в реальном приложении нужна серверная аутентификация)
+            const user = appData.users.find(u => 
+                u.login === username && u.password === password && u.type === userType
+            );
+            
+            if (user) {
+                appData.currentUser = user;
+                elements.userName.textContent = user.name;
+                elements.loginForm.style.display = 'none';
+                elements.mainInterface.style.display = 'block';
+                
+                // Сохранение данных
+                saveData();
+                
+                // Загрузка каталогов
+                loadCatalogs();
+                
+                // Загрузка данных личного кабинета
+                loadProfileData();
+                
+                // Если пользователь - модератор, загружаем данные для панели модератора
+                if (user.type === 'moderator') {
+                    loadModeratorData();
+                }
+            } else {
+                alert('Неверные учетные данные!');
+            }
+        }
+
+        // Обработка выхода
+        function handleLogout() {
+            appData.currentUser = null;
+            localStorage.removeItem('currentUser');
+            showLoginForm();
+            // Очистка полей формы
+            elements.username.value = '';
+            elements.password.value = '';
+            elements.userType.value = 'deputy';
+        }
+
+        // Переключение основных вкладок
+        function switchMainTab(tabId) {
+            // Сброс активных вкладок
+            elements.navTabs.forEach(tab => tab.classList.remove('active'));
+            elements.tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Активация выбранной вкладки
+            document.querySelector(`.nav-tab[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(`${tabId}Tab`).classList.add('active');
+            
+            // Если переходим в личный кабинет, обновляем данные
+            if (tabId === 'profile') {
+                loadProfileData();
+            }
+        }
+
+        // Переключение вкладок панели модератора
+        function switchPanelTab(panelId) {
+            // Сброс активных вкладок
+            elements.panelTabs.forEach(tab => tab.classList.remove('active'));
+            elements.panelContents.forEach(content => content.classList.remove('active'));
+            
+            // Активация выбранной вкладки
+            document.querySelector(`.panel-tab[data-panel="${panelId}"]`).classList.add('active');
+            document.getElementById(`${panelId}Panel`).classList.add('active');
+        }
+
+        // Загрузка каталогов
+        function loadCatalogs() {
+            elements.catalogGrid.innerHTML = '';
+            
+            appData.catalogs.forEach(catalog => {
+                const catalogElement = document.createElement('div');
+                catalogElement.className = 'catalog-item';
+                catalogElement.innerHTML = `
+                    <h3>${catalog.name}</h3>
+                    <p>${catalog.description}</p>
+                `;
+                
+                // Добавляем обработчик клика для перехода на страницу каталога
+                catalogElement.addEventListener('click', () => {
+                    openCatalogPage(catalog.id, catalog.name);
+                });
+                
+                elements.catalogGrid.appendChild(catalogElement);
+            });
+        }
+
+        // Открытие страницы каталога
+        function openCatalogPage(catalogId, catalogName) {
+            // Сохраняем данные о текущем каталоге в sessionStorage
+            sessionStorage.setItem('currentCatalog', JSON.stringify({
+                id: catalogId,
+                name: catalogName
+            }));
+            
+            // Переходим на страницу каталога
+            window.location.href = 'catalog-page.html';
+        }
+
+        // Загрузка данных личного кабинета
+        function loadProfileData() {
+            if (!appData.currentUser) return;
+            
+            const user = appData.currentUser;
+            
+            // Заполнение данных пользователя
+            elements.profileUserName.textContent = user.name;
+            elements.profileUserRole.textContent = getUserTypeName(user.type);
+            elements.profileLogin.textContent = user.login;
+            elements.profileEmail.textContent = user.email || '-';
+            elements.profilePhone.textContent = user.phone || '-';
+            elements.profileType.textContent = getUserTypeName(user.type);
+            
+            // Генерация аватара из инициалов
+            const initials = user.name.split(' ').map(n => n[0]).join('');
+            elements.userAvatar.textContent = initials;
+            
+            // Очистка полей смены пароля
+            elements.currentPassword.value = '';
+            elements.newPassword.value = '';
+            elements.confirmPassword.value = '';
+        }
+
+        // Загрузка данных для панели модератора
+        function loadModeratorData() {
+            loadCatalogsForModeration();
+            loadUsers();
+            loadEventsForModeration();
+        }
+
+        // Загрузка каталогов для управления
+        function loadCatalogsForModeration() {
+            elements.catalogList.innerHTML = '';
+            
+            appData.catalogs.forEach(catalog => {
+                const catalogElement = document.createElement('div');
+                catalogElement.className = 'catalog-item-admin';
+                catalogElement.innerHTML = `
+                    <div>
+                        <strong>${catalog.name}</strong>
+                        <p>${catalog.description}</p>
+                    </div>
+                    <div class="catalog-actions">
+                        <button class="btn btn-small btn-danger" data-id="${catalog.id}">Удалить</button>
+                    </div>
+                `;
+                elements.catalogList.appendChild(catalogElement);
+            });
+            
+            // Добавление обработчиков для кнопок удаления
+            document.querySelectorAll('.catalog-actions .btn-danger').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const catalogId = parseInt(e.target.getAttribute('data-id'));
+                    deleteCatalog(catalogId);
+                });
+            });
+        }
+
+        // Добавление каталога
+        function addCatalog() {
+            const name = elements.catalogName.value;
+            const description = elements.catalogDescription.value;
+            
+            if (name && description) {
+                const newCatalog = {
+                    id: appData.catalogs.length > 0 ? Math.max(...appData.catalogs.map(c => c.id)) + 1 : 1,
+                    name,
+                    description
+                };
+                
+                appData.catalogs.push(newCatalog);
+                elements.catalogName.value = '';
+                elements.catalogDescription.value = '';
+                
+                // Сохранение данных
+                saveData();
+                
+                // Обновление интерфейса
+                loadCatalogs();
+                loadCatalogsForModeration();
+                
+                alert('Каталог успешно добавлен!');
+            } else {
+                alert('Заполните все поля!');
+            }
+        }
+
+        // Удаление каталога
+        function deleteCatalog(id) {
+            if (confirm('Вы уверены, что хотите удалить этот каталог?')) {
+                appData.catalogs = appData.catalogs.filter(catalog => catalog.id !== id);
+                
+                // Сохранение данных
+                saveData();
+                
+                loadCatalogs();
+                loadCatalogsForModeration();
+            }
+        }
+
+        // Загрузка пользователей для управления
+        function loadUsers() {
+            elements.userList.innerHTML = '';
+            elements.selectUser.innerHTML = '<option value="">Выберите пользователя</option>';
+            
+            appData.users.forEach(user => {
+                // Для списка управления
+                const userElement = document.createElement('div');
+                userElement.className = 'user-item';
+                userElement.innerHTML = `
+                    <div>
+                        <strong>${user.name}</strong>
+                        <p>Логин: ${user.login} | Тип: ${getUserTypeName(user.type)}</p>
+                        <p>Почта: ${user.email || 'не указана'} | Телефон: ${user.phone || 'не указан'}</p>
+                    </div>
+                    <div class="user-actions">
+                        <button class="btn btn-small btn-success change-password-btn" data-id="${user.id}">Сменить пароль</button>
+                        <button class="btn btn-small btn-danger" data-id="${user.id}">Удалить</button>
+                    </div>
+                `;
+                elements.userList.appendChild(userElement);
+                
+                // Для выпадающего списка в разделе мероприятий
+                const option = document.createElement('option');
+                option.value = user.id;
+                option.textContent = `${user.name} (${getUserTypeName(user.type)})`;
+                elements.selectUser.appendChild(option);
+            });
+            
+            // Добавление обработчиков для кнопок удаления
+            document.querySelectorAll('.user-actions .btn-danger').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const userId = parseInt(e.target.getAttribute('data-id'));
+                    deleteUser(userId);
+                });
+            });
+            
+            // Добавление обработчиков для кнопок смены пароля
+            document.querySelectorAll('.change-password-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const userId = parseInt(e.target.getAttribute('data-id'));
+                    changeUserPassword(userId);
+                });
+            });
+        }
+
+        // Добавление пользователя
+        function addUser() {
+            const name = elements.newUserName.value;
+            const login = elements.newUserLogin.value;
+            const password = elements.newUserPassword.value;
+            const type = elements.newUserType.value;
+            const email = elements.newUserEmail.value;
+            const phone = elements.newUserPhone.value;
+            
+            if (name && login && password) {
+                const newUser = {
+                    id: appData.users.length > 0 ? Math.max(...appData.users.map(u => u.id)) + 1 : 1,
+                    name,
+                    login,
+                    password,
+                    type,
+                    email,
+                    phone
+                };
+                
+                appData.users.push(newUser);
+                elements.newUserName.value = '';
+                elements.newUserLogin.value = '';
+                elements.newUserPassword.value = '';
+                elements.newUserType.value = 'deputy';
+                elements.newUserEmail.value = '';
+                elements.newUserPhone.value = '';
+                
+                // Сохранение данных
+                saveData();
+                
+                // Обновление интерфейса
+                loadUsers();
+                
+                alert('Пользователь успешно добавлен!');
+            } else {
+                alert('Заполните обязательные поля (имя, логин, пароль)!');
+            }
+        }
+
+        // Удаление пользователя
+        function deleteUser(id) {
+            if (id === appData.currentUser.id) {
+                alert('Нельзя удалить текущего пользователя!');
+                return;
+            }
+            
+            if (confirm('Вы уверены, что хотите удалить этого пользователя?')) {
+                appData.users = appData.users.filter(user => user.id !== id);
+                
+                // Сохранение данных
+                saveData();
+                
+                loadUsers();
+            }
+        }
+
+        // Смена пароля пользователя модератором
+        function changeUserPassword(userId) {
+            const user = appData.users.find(u => u.id === userId);
+            if (!user) return;
+            
+            const newPassword = prompt(`Введите новый пароль для пользователя ${user.name}:`);
+            if (newPassword && newPassword.length >= 3) {
+                user.password = newPassword;
+                
+                // Сохранение данных
+                saveData();
+                
+                alert(`Пароль для пользователя ${user.name} успешно изменен!`);
+            } else if (newPassword) {
+                alert('Пароль должен содержать не менее 3 символов!');
+            }
+        }
+
+        // Смена пароля текущим пользователем
+        function changePassword() {
+            const currentPassword = elements.currentPassword.value;
+            const newPassword = elements.newPassword.value;
+            const confirmPassword = elements.confirmPassword.value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert('Заполните все поля!');
+                return;
+            }
+            
+            if (currentPassword !== appData.currentUser.password) {
+                alert('Текущий пароль введен неверно!');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('Новый пароль и подтверждение не совпадают!');
+                return;
+            }
+            
+            if (newPassword.length < 3) {
+                alert('Пароль должен содержать не менее 3 символов!');
+                return;
+            }
+            
+            appData.currentUser.password = newPassword;
+            
+            // Сохранение данных
+            saveData();
+            
+            alert('Пароль успешно изменен!');
+            
+            // Очистка полей
+            elements.currentPassword.value = '';
+            elements.newPassword.value = '';
+            elements.confirmPassword.value = '';
+        }
+
+        // Загрузка мероприятий для управления
+        function loadEventsForModeration() {
+            elements.selectEvent.innerHTML = '<option value="">Выберите мероприятие</option>';
+            elements.eventsList.innerHTML = '';
+            
+            appData.events.forEach(event => {
+                // Для выпадающего списка
+                const option = document.createElement('option');
+                option.value = event.id;
+                option.textContent = `${event.name} (${event.date})`;
+                elements.selectEvent.appendChild(option);
+                
+                // Для списка мероприятий с отметками
+                const eventElement = document.createElement('div');
+                eventElement.className = 'event-item';
+                eventElement.innerHTML = `
+                    <h3>${event.name}</h3>
+                    <p>Дата: ${event.date}</p>
+                    <div class="attendance-list" id="attendance-${event.id}"></div>
+                `;
+                elements.eventsList.appendChild(eventElement);
+                
+                // Загрузка списка посещений для этого мероприятия
+                loadAttendanceForEvent(event.id);
+            });
+        }
+
+        // Загрузка посещений для конкретного мероприятия
+        function loadAttendanceForEvent(eventId) {
+            const attendanceList = document.getElementById(`attendance-${eventId}`);
+            attendanceList.innerHTML = '';
+            
+            appData.users.forEach(user => {
+                const attendance = appData.attendance.find(a => 
+                    a.userId === user.id && a.eventId === eventId
+                );
+                
+                const attended = attendance ? attendance.attended : false;
+                
+                const attendanceElement = document.createElement('div');
+                attendanceElement.className = 'user-item';
+                attendanceElement.innerHTML = `
+                    <div>${user.name} (${getUserTypeName(user.type)})</div>
+                    <div>${attended ? '✓ Присутствовал' : '✗ Отсутствовал'}</div>
+                `;
+                attendanceList.appendChild(attendanceElement);
+            });
+        }
+
+        // Отметка посещения мероприятия
+        function markAttendance() {
+            const userId = parseInt(elements.selectUser.value);
+            const eventId = parseInt(elements.selectEvent.value);
+            
+            if (!userId || !eventId) {
+                alert('Выберите пользователя и мероприятие!');
+                return;
+            }
+            
+            // Поиск существующей записи
+            const existingAttendance = appData.attendance.find(a => 
+                a.userId === userId && a.eventId === eventId
+            );
+            
+            if (existingAttendance) {
+                // Переключение статуса посещения
+                existingAttendance.attended = !existingAttendance.attended;
+            } else {
+                // Добавление новой записи
+                appData.attendance.push({
+                    userId,
+                    eventId,
+                    attended: true
+                });
+            }
+            
+            // Сохранение данных
+            saveData();
+            
+            // Обновление интерфейса
+            loadAttendanceForEvent(eventId);
+            
+            alert('Посещение отмечено!');
+        }
+
+        // Вспомогательная функция для получения названия типа пользователя
+        function getUserTypeName(type) {
+            switch(type) {
+                case 'deputy': return 'Депутат';
+                case 'assistant': return 'Помощник депутата';
+                case 'moderator': return 'Модератор';
+                default: return 'Неизвестно';
+            }
+        }
+
+        // Запуск приложения
+        initApp();
+    </script>
+</body>
+</html>
