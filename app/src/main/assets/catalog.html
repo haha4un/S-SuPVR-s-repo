@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог - Городская Дума</title>
+    <link rel="stylesheet" href="catalog.css">
+</head>
+<body>
+    <!-- Шапка -->
+    <div class="header">
+        <div class="container header-content">
+            <h1>Кабинет депутата</h1>
+            <div class="user-info">
+                <span class="user-name" id="userName">Пользователь</span>
+                <button class="logout-btn" id="logoutBtn">Выйти</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Заголовок каталога -->
+        <div class="catalog-header">
+            <h2 class="catalog-title" id="catalogTitle">Каталог</h2>
+            <button class="btn" id="backBtn">Назад к каталогам</button>
+        </div>
+        
+        <p class="catalog-description" id="catalogDescription">Описание каталога</p>
+
+        <!-- Контент будет загружаться динамически в зависимости от типа каталога -->
+        <div id="catalogContent">
+            <!-- Здесь будет отображаться содержимое каталога -->
+        </div>
+    </div>
+
+    <script>
+        // Данные приложения
+        const appData = {
+            currentUser: null,
+            currentCatalog: null,
+            catalogs: [],
+            catalogData: {}
+        };
+
+        // DOM элементы
+        const elements = {
+            userName: document.getElementById('userName'),
+            logoutBtn: document.getElementById('logoutBtn'),
+            backBtn: document.getElementById('backBtn'),
+            catalogTitle: document.getElementById('catalogTitle'),
+            catalogDescription: document.getElementById('catalogDescription'),
+            catalogContent: document.getElementById('catalogContent')
+        };
+
+        // Инициализация приложения
+        function initApp() {
+            // Загрузка данных из localStorage
+            loadData();
+            
+            // Проверка авторизации
+            if (!appData.currentUser) {
+                alert('Необходима авторизация!');
+                window.location.href = 'deepseek_html_20251006_5d43b1.html';
+                return;
+            }
+            
+            // Получение ID каталога из URL параметров
+            const urlParams = new URLSearchParams(window.location.search);
+            const catalogId = parseInt(urlParams.get('id'));
+            
+            if (!catalogId) {
+                alert('Каталог не указан!');
+                window.location.href = 'deepseek_html_20251006_5d43b1.html';
+                return;
+            }
+            
+            // Поиск каталога
+            const catalog = appData.catalogs.find(c => c.id === catalogId);
+            if (!catalog) {
+                alert('Каталог не найден!');
+                window.location.href = 'deepseek_html_20251006_5d43b1.html';
+                return;
+            }
+            
+            appData.currentCatalog = catalog;
+            
+            // Заполнение информации о каталоге
+            elements.userName.textContent = appData.currentUser.name;
+            elements.catalogTitle.textContent = catalog.name;
+            elements.catalogDescription.textContent = catalog.description;
+            
+            // Загрузка содержимого каталога
+            loadCatalogContent();
+            
+            // Настройка обработчиков событий
+            setupEventListeners();
+        }
+
+        // Загрузка данных из localStorage
+        function loadData() {
+            const savedUser = localStorage.getItem('currentUser');
+            const savedCatalogs = localStorage.getItem('catalogs');
+            const savedCatalogData = localStorage.getItem('catalogData');
+            
+            if (savedUser) appData.currentUser = JSON.parse(savedUser);
+            if (savedCatalogs) appData.catalogs = JSON.parse(savedCatalogs);
+            if (savedCatalogData) appData.catalogData = JSON.parse(savedCatalogData);
+        }
+
+        // Сохранение данных в localStorage
+        function saveData() {
+            localStorage.setItem('catalogData', JSON.stringify(appData.catalogData));
+        }
+
+        // Настройка обработчиков событий
+        function setupEventListeners() {
+            // Выход из системы
+            elements.logoutBtn.addEventListener('click', handleLogout);
+            
+            // Возврат к списку каталогов
+            elements.backBtn.addEventListener('click', () => {
+                window.location.href = 'deepseek_html_20251006_5d43b1.html';
+            });
+        }
+
+        // Обработка выхода
+        function handleLogout() {
+            appData.currentUser = null;
+            localStorage.removeItem('currentUser');
+            window.location.href = 'deepseek_html_20251006_5d43b1.html';
+        }
+
+        // Загрузка содержимого каталога
+        function loadCatalogContent() {
+            const catalog = appData.currentCatalog;
+            const catalogId = catalog.id;
+            
+            // Инициализация данных каталога, если их нет
+            if (!appData.catalogData[catalogId]) {
+                appData.catalogData[catalogId] = {
+                    documents: [],
+                    folders: [],
+                    links: [],
+                    events: []
+                };
+                
+                // Добавление примеров данных в зависимости от типа каталога
+                initializeSampleData(catalogId);
+                saveData();
+            }
+            
+            const catalogData = appData.catalogData[catalogId];
+            
+            // Очистка контента
+            elements.catalogContent.innerHTML = '';
+            
+            // Загрузка соответствующего интерфейса в зависимости от типа каталога
+            if (catalogId === 12) {
+                // Каталог внешних ресурсов (ссылки)
+                loadLinksInterface(catalogData);
+            } else if (catalogId === 4) {
+                // План мероприятий (календарь)
+                loadCalendarInterface(catalogData);
+            } else if ([5].includes(catalogId)) {
+                // Каталоги с группировкой (подкаталоги)
+                loadGroupedInterface(catalogData);
+            } else {
+                // Обычные каталоги (документы)
+                loadDocumentsInterface(catalogData);
+            }
+        }
+
+        // Инициализация примеров данных
+        function initializeSampleData(catalogId) {
+            const data = appData.catalogData[catalogId];
+            
+            switch(catalogId) {
+                case 1: // Повестки заседаний 3C (теперь обычный каталог)
+                    data.documents = [
+                        { 
+                            id: 1, 
+                            title: "Протокол заседания от 15.10.2023", 
+                            preview: "Протокол очередного заседания законодательного собрания...",
+                            content: "Протокол очередного заседания законодательного собрания. На заседании были рассмотрены вопросы бюджета, благоустройства и социальных программ.",
+                            date: "2023-10-15", 
+                            author: "Иванов И.И." 
+                        }
+                    ];
+                    break;
+                    
+                case 2: // Прочие повестки (теперь обычный каталог)
+                    data.documents = [
+                        { 
+                            id: 1, 
+                            title: "Дополнительная повестка", 
+                            preview: "Дополнительные материалы к заседанию...",
+                            content: "Дополнительные материалы к заседанию, включая справки и аналитические записки.",
+                            date: "2023-10-10", 
+                            author: "Петров П.П." 
+                        }
+                    ];
+                    break;
+                    
+                case 3: // Новостная лента
+                    data.documents = [
+                        { 
+                            id: 1, 
+                            title: "Открытие нового парка", 
+                            preview: "В центре города открыт новый парк с детскими площадками и зонами отдыха...",
+                            content: "В центре города открыт новый парк с детскими площадками и зонами отдыха. Проект реализован в рамках программы благоустройства городских территорий. Парк включает в себя детские игровые комплексы, спортивные площадки, зоны для пикника и пешеходные дорожки. Общая площадь благоустройства составила 5 гектаров.",
+                            date: "2023-10-05", 
+                            author: "Сидоров С.С." 
+                        }
+                    ];
+                    break;
+                    
+                case 4: // План мероприятий
+                    data.events = [
+                        { id: 1, title: "Заседание комитета по бюджету", date: "2023-10-15", time: "10:00", description: "Обсуждение проекта бюджета на следующий год" }
+                    ];
+                    break;
+                    
+                case 5: // Паспорт закона
+                    data.folders = [
+                        { id: 1, name: "Социальные законы", documents: [
+                            { 
+                                id: 1, 
+                                title: "Закон о социальной поддержке", 
+                                preview: "Полный текст закона о социальной поддержке населения...",
+                                content: "Полный текст закона о социальной поддержке населения. Закон регулирует вопросы предоставления социальных выплат, льгот и гарантий различным категориям граждан.",
+                                date: "2023-09-10", 
+                                author: "Иванов И.И." 
+                            }
+                        ]}
+                    ];
+                    break;
+                    
+                case 12: // Внешние ресурсы
+                    data.links = [
+                        { id: 1, title: "Официальный сайт городской думы", url: "https://duma.example.ru", description: "Официальный сайт законодательного собрания" }
+                    ];
+                    break;
+                    
+                default:
+                    // Для остальных каталогов добавляем пустые массивы
+                    break;
+            }
+        }
+
+        // Загрузка интерфейса для обычных документов
+        function loadDocumentsInterface(catalogData) {
+            const catalogId = appData.currentCatalog.id;
+            
+            // Определяем заголовок в зависимости от типа каталога
+            const sectionTitle = catalogId === 3 ? 'Новости' : 'Документы';
+            const addButtonText = catalogId === 3 ? 'Добавить новость' : 'Добавить документ';
+            const titlePlaceholder = catalogId === 3 ? 'Введите заголовок новости' : 'Введите название документа';
+            const contentPlaceholder = catalogId === 3 ? 'Введите текст новости' : 'Введите содержание документа';
+            
+            // Форма добавления документа/новости
+            const addForm = document.createElement('div');
+            addForm.className = 'add-form';
+            addForm.innerHTML = `
+                <h3 class="section-title">${addButtonText}</h3>
+                <div class="form-group">
+                    <label for="docTitle">${catalogId === 3 ? 'Заголовок новости:' : 'Название документа:'}</label>
+                    <input type="text" id="docTitle" placeholder="${titlePlaceholder}">
+                </div>
+                <div class="form-group">
+                    <label for="docContent">${catalogId === 3 ? 'Текст новости:' : 'Содержание:'}</label>
+                    <textarea id="docContent" placeholder="${contentPlaceholder}"></textarea>
+                </div>
+                <button class="btn btn-success" id="addDocBtn">${addButtonText}</button>
+            `;
+            elements.catalogContent.appendChild(addForm);
+            
+            // Список документов/новостей
+            const documentsSection = document.createElement('div');
+            documentsSection.className = 'content-section';
+            documentsSection.innerHTML = `<h3 class="section-title">${sectionTitle}</h3>`;
+            elements.catalogContent.appendChild(documentsSection);
+            
+            const documentsList = document.createElement('div');
+            documentsList.className = 'documents-list';
+            documentsSection.appendChild(documentsList);
+            
+            // Загрузка документов/новостей
+            loadDocumentsList(catalogData.documents, documentsList, catalogId);
+            
+            // Обработчик добавления документа/новости
+            document.getElementById('addDocBtn').addEventListener('click', () => {
+                const title = document.getElementById('docTitle').value;
+                const content = document.getElementById('docContent').value;
+                
+                if (!title || !content) {
+                    alert('Заполните все поля!');
+                    return;
+                }
+                
+                const newDocument = {
+                    id: Date.now(),
+                    title,
+                    preview: content.length > 150 ? content.substring(0, 150) + '...' : content,
+                    content,
+                    date: new Date().toISOString().split('T')[0],
+                    author: appData.currentUser.name
+                };
+                
+                catalogData.documents.push(newDocument);
+                saveData();
+                
+                document.getElementById('docTitle').value = '';
+                document.getElementById('docContent').value = '';
+                
+                loadDocumentsList(catalogData.documents, documentsList, catalogId);
+                alert(catalogId === 3 ? 'Новость успешно добавлена!' : 'Документ успешно добавлен!');
+            });
+        }
+
+        // Загрузка списка документов/новостей
+        function loadDocumentsList(documents, container, catalogId) {
+            container.innerHTML = '';
+            
+            if (documents.length === 0) {
+                const emptyMessage = catalogId === 3 ? 'В этом каталоге пока нет новостей' : 'В этом каталоге пока нет документов';
+                container.innerHTML = `<div class="empty-message">${emptyMessage}</div>`;
+                return;
+            }
+            
+            // Сортировка по дате (новые сверху)
+            documents.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            documents.forEach(doc => {
+                const docElement = document.createElement('div');
+                docElement.className = 'document-item';
+                docElement.innerHTML = `
+                    <div class="document-header">
+                        <div style="flex: 1;">
+                            <h4 class="document-title">${doc.title}</h4>
+                            <div class="document-meta">${formatDate(doc.date)} • Автор: ${doc.author}</div>
+                            ${doc.preview ? `<div class="document-preview">${doc.preview}</div>` : ''}
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="document-content">
+                        ${doc.content}
+                    </div>
+                    <div class="document-actions">
+                        <button class="btn btn-danger btn-small delete-doc-btn" data-id="${doc.id}">Удалить</button>
+                    </div>
+                `;
+                container.appendChild(docElement);
+                
+                // Обработчик раскрытия/скрытия документа/новости
+                docElement.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('delete-doc-btn') && !e.target.classList.contains('btn')) {
+                        docElement.classList.toggle('expanded');
+                    }
+                });
+            });
+            
+            // Обработчики удаления документов/новостей
+            document.querySelectorAll('.delete-doc-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const docId = parseInt(e.target.getAttribute('data-id'));
+                    const message = catalogId === 3 ? 'Вы уверены, что хотите удалить эту новость?' : 'Вы уверены, что хотите удалить этот документ?';
+                    if (confirm(message)) {
+                        const index = documents.findIndex(d => d.id === docId);
+                        if (index !== -1) {
+                            documents.splice(index, 1);
+                            saveData();
+                            loadDocumentsList(documents, container, catalogId);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Загрузка интерфейса для каталогов с группировкой
+        function loadGroupedInterface(catalogData) {
+            const catalogId = appData.currentCatalog.id;
+            
+            // Форма добавления папки
+            const addFolderForm = document.createElement('div');
+            addFolderForm.className = 'add-form';
+            addFolderForm.innerHTML = `
+                <h3 class="section-title">Добавить папку</h3>
+                <div class="form-group">
+                    <label for="folderName">Название папки:</label>
+                    <input type="text" id="folderName" placeholder="Введите название папки">
+                </div>
+                <button class="btn btn-success" id="addFolderBtn">Добавить папку</button>
+            `;
+            elements.catalogContent.appendChild(addFolderForm);
+            
+            // Форма добавления документа в папку
+            const addDocForm = document.createElement('div');
+            addDocForm.className = 'add-form';
+            addDocForm.innerHTML = `
+                <h3 class="section-title">Добавить документ в папку</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="docFolder">Выберите папку:</label>
+                        <select id="docFolder">
+                            <option value="">-- Выберите папку --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="groupDocTitle">Название документа:</label>
+                        <input type="text" id="groupDocTitle" placeholder="Введите название документа">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="groupDocContent">Содержание:</label>
+                    <textarea id="groupDocContent" placeholder="Введите содержание документа"></textarea>
+                </div>
+                <button class="btn btn-success" id="addGroupDocBtn">Добавить документ</button>
+            `;
+            elements.catalogContent.appendChild(addDocForm);
+            
+            // Структура папок
+            const folderStructure = document.createElement('div');
+            folderStructure.className = 'folder-structure';
+            folderStructure.innerHTML = '<h3 class="section-title">Структура документов</h3>';
+            elements.catalogContent.appendChild(folderStructure);
+            
+            // Загрузка папок
+            loadFoldersList(catalogData.folders, folderStructure);
+            
+            // Обновление выпадающего списка папок
+            updateFolderSelect(catalogData.folders);
+            
+            // Обработчик добавления папки
+            document.getElementById('addFolderBtn').addEventListener('click', () => {
+                const folderName = document.getElementById('folderName').value;
+                
+                if (!folderName) {
+                    alert('Введите название папки!');
+                    return;
+                }
+                
+                const newFolder = {
+                    id: Date.now(),
+                    name: folderName,
+                    documents: []
+                };
+                
+                catalogData.folders.push(newFolder);
+                saveData();
+                
+                document.getElementById('folderName').value = '';
+                
+                loadFoldersList(catalogData.folders, folderStructure);
+                updateFolderSelect(catalogData.folders);
+                alert('Папка успешно добавлена!');
+            });
+            
+            // Обработчик добавления документа в папку
+            document.getElementById('addGroupDocBtn').addEventListener('click', () => {
+                const folderId = parseInt(document.getElementById('docFolder').value);
+                const title = document.getElementById('groupDocTitle').value;
+                const content = document.getElementById('groupDocContent').value;
+                
+                if (!folderId || !title || !content) {
+                    alert('Заполните все поля!');
+                    return;
+                }
+                
+                const folder = catalogData.folders.find(f => f.id === folderId);
+                if (!folder) {
+                    alert('Папка не найдена!');
+                    return;
+                }
+                
+                const newDocument = {
+                    id: Date.now(),
+                    title,
+                    preview: content.length > 150 ? content.substring(0, 150) + '...' : content,
+                    content,
+                    date: new Date().toISOString().split('T')[0],
+                    author: appData.currentUser.name
+                };
+                
+                folder.documents.push(newDocument);
+                saveData();
+                
+                document.getElementById('groupDocTitle').value = '';
+                document.getElementById('groupDocContent').value = '';
+                
+                loadFoldersList(catalogData.folders, folderStructure);
+                alert('Документ успешно добавлен!');
+            });
+        }
+
+        // Загрузка списка папок для обычных каталогов
+        function loadFoldersList(folders, container) {
+            // Удаляем старую структуру, кроме заголовка
+            const existingFolders = container.querySelectorAll('.folder');
+            existingFolders.forEach(folder => folder.remove());
+            
+            if (folders.length === 0) {
+                container.innerHTML += '<div class="empty-message">Папки не созданы</div>';
+                return;
+            }
+            
+            folders.forEach(folder => {
+                const folderElement = document.createElement('div');
+                folderElement.className = 'folder';
+                folderElement.innerHTML = `
+                    <div class="folder-header">
+                        <div class="folder-name">${folder.name}</div>
+                        <div class="folder-actions">
+                            <button class="btn btn-danger btn-small delete-folder-btn" data-id="${folder.id}">Удалить</button>
+                        </div>
+                    </div>
+                    <div class="folder-content">
+                        <div class="documents-list" id="folder-${folder.id}"></div>
+                    </div>
+                `;
+                container.appendChild(folderElement);
+                
+                // Загрузка документов папки
+                loadFolderDocuments(folder.documents, folder.id);
+                
+                // Обработчик раскрытия/скрытия папки
+                folderElement.querySelector('.folder-header').addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('delete-folder-btn')) {
+                        const content = folderElement.querySelector('.folder-content');
+                        content.classList.toggle('active');
+                    }
+                });
+                
+                // Обработчик удаления папки
+                folderElement.querySelector('.delete-folder-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const folderId = parseInt(e.target.getAttribute('data-id'));
+                    if (confirm('Вы уверены, что хотите удалить эту папку и все документы в ней?')) {
+                        const index = folders.findIndex(f => f.id === folderId);
+                        if (index !== -1) {
+                            folders.splice(index, 1);
+                            saveData();
+                            loadFoldersList(folders, container);
+                            updateFolderSelect(folders);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Загрузка документов в папке для обычных каталогов
+        function loadFolderDocuments(documents, folderId) {
+            const container = document.getElementById(`folder-${folderId}`);
+            container.innerHTML = '';
+            
+            if (documents.length === 0) {
+                container.innerHTML = '<div class="empty-message">В этой папке нет документов</div>';
+                return;
+            }
+            
+            // Сортировка по дате (новые сверху)
+            documents.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            documents.forEach(doc => {
+                const docElement = document.createElement('div');
+                docElement.className = 'document-item';
+                docElement.innerHTML = `
+                    <div class="document-header">
+                        <div style="flex: 1;">
+                            <h4 class="document-title">${doc.title}</h4>
+                            <div class="document-meta">${formatDate(doc.date)} • Автор: ${doc.author}</div>
+                            <div class="document-preview">${doc.preview}</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="document-content">
+                        ${doc.content}
+                    </div>
+                    <div class="document-actions">
+                        <button class="btn btn-danger btn-small delete-folder-doc-btn" data-folder="${folderId}" data-id="${doc.id}">Удалить</button>
+                    </div>
+                `;
+                container.appendChild(docElement);
+                
+                // Обработчик раскрытия/скрытия документа
+                docElement.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('delete-folder-doc-btn') && !e.target.classList.contains('btn')) {
+                        docElement.classList.toggle('expanded');
+                    }
+                });
+            });
+            
+            // Обработчики удаления документов из папки
+            document.querySelectorAll('.delete-folder-doc-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const folderId = parseInt(e.target.getAttribute('data-folder'));
+                    const docId = parseInt(e.target.getAttribute('data-id'));
+                    
+                    if (confirm('Вы уверены, что хотите удалить этот документ?')) {
+                        const folder = appData.catalogData[appData.currentCatalog.id].folders.find(f => f.id === folderId);
+                        if (folder) {
+                            const index = folder.documents.findIndex(d => d.id === docId);
+                            if (index !== -1) {
+                                folder.documents.splice(index, 1);
+                                saveData();
+                                loadFolderDocuments(folder.documents, folderId);
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        // Обновление выпадающего списка папок
+        function updateFolderSelect(folders) {
+            const select = document.getElementById('docFolder');
+            select.innerHTML = '<option value="">-- Выберите папку --</option>';
+            
+            folders.forEach(folder => {
+                const option = document.createElement('option');
+                option.value = folder.id;
+                option.textContent = folder.name;
+                select.appendChild(option);
+            });
+        }
+
+        // Загрузка интерфейса для календаря мероприятий
+        function loadCalendarInterface(catalogData) {
+            const catalogId = appData.currentCatalog.id;
+            const currentDate = new Date();
+            let currentMonth = currentDate.getMonth();
+            let currentYear = currentDate.getFullYear();
+            
+            // Форма добавления мероприятия
+            const addForm = document.createElement('div');
+            addForm.className = 'add-form';
+            addForm.innerHTML = `
+                <h3 class="section-title">Добавить мероприятие</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventTitle">Название мероприятия:</label>
+                        <input type="text" id="eventTitle" placeholder="Введите название мероприятия">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventDate">Дата мероприятия:</label>
+                        <input type="date" id="eventDate">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Время мероприятия:</label>
+                        <div class="time-input-group">
+                            <input type="time" id="eventTime" class="time-input">
+                            <span>(необязательно)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="eventDescription">Описание:</label>
+                    <textarea id="eventDescription" placeholder="Введите описание мероприятия"></textarea>
+                </div>
+                <button class="btn btn-success" id="addEventBtn">Добавить мероприятие</button>
+            `;
+            elements.catalogContent.appendChild(addForm);
+            
+            // Календарь
+            const calendarContainer = document.createElement('div');
+            calendarContainer.className = 'calendar-container';
+            elements.catalogContent.appendChild(calendarContainer);
+            
+            // Функция отрисовки календаря
+            function renderCalendar() {
+                const firstDay = new Date(currentYear, currentMonth, 1);
+                const lastDay = new Date(currentYear, currentMonth + 1, 0);
+                const daysInMonth = lastDay.getDate();
+                const startingDay = firstDay.getDay();
+                
+                // Заголовок календаря
+                const monthNames = [
+                    "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+                    "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+                ];
+                
+                calendarContainer.innerHTML = `
+                    <div class="calendar-header">
+                        <h3>${monthNames[currentMonth]} ${currentYear}</h3>
+                        <div class="calendar-nav">
+                            <button class="btn btn-small" id="prevMonth">←</button>
+                            <button class="btn btn-small" id="todayBtn">Сегодня</button>
+                            <button class="btn btn-small" id="nextMonth">→</button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-day-header">Пн</div>
+                        <div class="calendar-day-header">Вт</div>
+                        <div class="calendar-day-header">Ср</div>
+                        <div class="calendar-day-header">Чт</div>
+                        <div class="calendar-day-header">Пт</div>
+                        <div class="calendar-day-header">Сб</div>
+                        <div class="calendar-day-header">Вс</div>
+                    </div>
+                    <div class="calendar-grid" id="calendarDays"></div>
+                `;
+                
+                const calendarDays = document.getElementById('calendarDays');
+                
+                // Заполнение пустых ячеек перед первым днем месяца
+                for (let i = 0; i < (startingDay === 0 ? 6 : startingDay - 1); i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'calendar-day other-month';
+                    calendarDays.appendChild(emptyDay);
+                }
+                
+                // Заполнение дней месяца
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    
+                    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const dayEvents = catalogData.events.filter(event => event.date === dateStr);
+                    
+                    // Сортировка мероприятий по времени
+                    dayEvents.sort((a, b) => {
+                        if (!a.time && !b.time) return 0;
+                        if (!a.time) return 1;
+                        if (!b.time) return -1;
+                        return a.time.localeCompare(b.time);
+                    });
+                    
+                    dayElement.innerHTML = `
+                        <div class="day-number">${day}</div>
+                        <div class="day-events" id="events-${dateStr}"></div>
+                    `;
+                    
+                    calendarDays.appendChild(dayElement);
+                    
+                    // Добавление мероприятий на день
+                    const eventsContainer = document.getElementById(`events-${dateStr}`);
+                    dayEvents.forEach(event => {
+                        const eventElement = document.createElement('div');
+                        eventElement.className = event.time ? 'event-item with-time' : 'event-item';
+                        
+                        if (event.time) {
+                            eventElement.innerHTML = `
+                                <div>${event.title}</div>
+                                <div class="event-time">${event.time}</div>
+                            `;
+                        } else {
+                            eventElement.textContent = event.title;
+                        }
+                        
+                        eventElement.title = event.description;
+                        eventsContainer.appendChild(eventElement);
+                        
+                        // Обработчик клика на мероприятие
+                        eventElement.addEventListener('click', () => {
+                            const timeInfo = event.time ? `\nВремя: ${event.time}` : '';
+                            alert(`Мероприятие: ${event.title}\nДата: ${formatDate(event.date)}${timeInfo}\nОписание: ${event.description}`);
+                        });
+                    });
+                }
+                
+                // Обработчики навигации по календарю
+                document.getElementById('prevMonth').addEventListener('click', () => {
+                    currentMonth--;
+                    if (currentMonth < 0) {
+                        currentMonth = 11;
+                        currentYear--;
+                    }
+                    renderCalendar();
+                });
+                
+                document.getElementById('nextMonth').addEventListener('click', () => {
+                    currentMonth++;
+                    if (currentMonth > 11) {
+                        currentMonth = 0;
+                        currentYear++;
+                    }
+                    renderCalendar();
+                });
+                
+                document.getElementById('todayBtn').addEventListener('click', () => {
+                    currentMonth = currentDate.getMonth();
+                    currentYear = currentDate.getFullYear();
+                    renderCalendar();
+                });
+            }
+            
+            // Первоначальная отрисовка календаря
+            renderCalendar();
+            
+            // Обработчик добавления мероприятия
+            document.getElementById('addEventBtn').addEventListener('click', () => {
+                const title = document.getElementById('eventTitle').value;
+                const date = document.getElementById('eventDate').value;
+                const time = document.getElementById('eventTime').value;
+                const description = document.getElementById('eventDescription').value;
+                
+                if (!title || !date || !description) {
+                    alert('Заполните все обязательные поля!');
+                    return;
+                }
+                
+                const newEvent = {
+                    id: Date.now(),
+                    title,
+                    date,
+                    time: time || null,
+                    description
+                };
+                
+                catalogData.events.push(newEvent);
+                saveData();
+                
+                document.getElementById('eventTitle').value = '';
+                document.getElementById('eventDate').value = '';
+                document.getElementById('eventTime').value = '';
+                document.getElementById('eventDescription').value = '';
+                
+                renderCalendar();
+                alert('Мероприятие успешно добавлено!');
+            });
+        }
+
+        // Загрузка интерфейса для ссылок
+        function loadLinksInterface(catalogData) {
+            const catalogId = appData.currentCatalog.id;
+            
+            // Форма добавления ссылки
+            const addForm = document.createElement('div');
+            addForm.className = 'add-form';
+            addForm.innerHTML = `
+                <h3 class="section-title">Добавить ссылку</h3>
+                <div class="form-group">
+                    <label for="linkTitle">Название ссылки:</label>
+                    <input type="text" id="linkTitle" placeholder="Введите название ссылки">
+                </div>
+                <div class="form-group">
+                    <label for="linkUrl">URL:</label>
+                    <input type="url" id="linkUrl" placeholder="https://example.com">
+                </div>
+                <div class="form-group">
+                    <label for="linkDescription">Описание:</label>
+                    <textarea id="linkDescription" placeholder="Введите описание ссылки"></textarea>
+                </div>
+                <button class="btn btn-success" id="addLinkBtn">Добавить ссылку</button>
+            `;
+            elements.catalogContent.appendChild(addForm);
+            
+            // Список ссылок
+            const linksSection = document.createElement('div');
+            linksSection.className = 'content-section';
+            linksSection.innerHTML = '<h3 class="section-title">Внешние ресурсы</h3>';
+            elements.catalogContent.appendChild(linksSection);
+            
+            const linksList = document.createElement('div');
+            linksList.className = 'links-list';
+            linksSection.appendChild(linksList);
+            
+            // Загрузка ссылок
+            loadLinksList(catalogData.links, linksList);
+            
+            // Обработчик добавления ссылки
+            document.getElementById('addLinkBtn').addEventListener('click', () => {
+                const title = document.getElementById('linkTitle').value;
+                const url = document.getElementById('linkUrl').value;
+                const description = document.getElementById('linkDescription').value;
+                
+                if (!title || !url || !description) {
+                    alert('Заполните все поля!');
+                    return;
+                }
+                
+                // Простая валидация URL
+                if (!isValidUrl(url)) {
+                    alert('Введите корректный URL!');
+                    return;
+                }
+                
+                const newLink = {
+                    id: Date.now(),
+                    title,
+                    url,
+                    description
+                };
+                
+                catalogData.links.push(newLink);
+                saveData();
+                
+                document.getElementById('linkTitle').value = '';
+                document.getElementById('linkUrl').value = '';
+                document.getElementById('linkDescription').value = '';
+                
+                loadLinksList(catalogData.links, linksList);
+                alert('Ссылка успешно добавлена!');
+            });
+        }
+
+        // Загрузка списка ссылок
+        function loadLinksList(links, container) {
+            container.innerHTML = '';
+            
+            if (links.length === 0) {
+                container.innerHTML = '<div class="empty-message">В этом каталоге пока нет ссылок</div>';
+                return;
+            }
+            
+            links.forEach(link => {
+                const linkElement = document.createElement('div');
+                linkElement.className = 'link-item';
+                linkElement.innerHTML = `
+                    <h4 class="link-title">${link.title}</h4>
+                    <a href="${link.url}" class="link-url" target="_blank">${link.url}</a>
+                    <div class="link-description">${link.description}</div>
+                    <div class="document-actions">
+                        <button class="btn btn-danger btn-small delete-link-btn" data-id="${link.id}">Удалить</button>
+                    </div>
+                `;
+                container.appendChild(linkElement);
+            });
+            
+            // Обработчики удаления ссылок
+            document.querySelectorAll('.delete-link-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const linkId = parseInt(e.target.getAttribute('data-id'));
+                    if (confirm('Вы уверены, что хотите удалить эту ссылку?')) {
+                        const index = links.findIndex(l => l.id === linkId);
+                        if (index !== -1) {
+                            links.splice(index, 1);
+                            saveData();
+                            loadLinksList(links, container);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Вспомогательные функции
+        function formatDate(dateString) {
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('ru-RU', options);
+        }
+        
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        // Запуск приложения
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
+    </script>
+</body>
+</html>
