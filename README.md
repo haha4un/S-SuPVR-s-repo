@@ -1,4 +1,4 @@
-# ТЕСТЫ ДЛЯ ПОЛЬЗОВАТЕЛЕЙ: 
+# ТЕСТЫ ДЛЯ ПОЛЬЗОВАТЕЛЕЙ (APK в release): 
 - mail: s.sidorov@permkray.ru password: 123  -- superUser
 - mail: ivanov@permkray.ru password: 123 -- Deputate
 - mail: p.petrov@permkray.ru password: 123 -- assistant 
