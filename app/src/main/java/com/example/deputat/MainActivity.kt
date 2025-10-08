@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LocalFileWebView("mmm.html")
+            LocalFileWebView("index.html")
             }
         }
 }

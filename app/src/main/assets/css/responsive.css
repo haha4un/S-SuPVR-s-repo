@@ -1,0 +1,211 @@
+/* Улучшения для мобильных устройств */
+@media (max-width: 768px) {
+    .container {
+        padding: 12px;
+    }
+    
+    .login-form {
+        margin: 30px auto;
+        padding: 20px;
+    }
+    
+    .header {
+        padding: 12px 0;
+    }
+    
+    .header h1 {
+        font-size: 18px;
+    }
+    
+    .user-name {
+        font-size: 14px;
+    }
+    
+    .catalog-item {
+        padding: 18px;
+    }
+    
+    .catalog-item h3 {
+        font-size: 17px;
+    }
+    
+    .btn {
+        padding: 14px 16px;
+    }
+    
+    .modal-content {
+        padding: 20px;
+    }
+    
+    .user-list-item {
+        padding: 12px;
+        min-height: 65px;
+    }
+    
+    .avatar {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .avatar-placeholder {
+        width: 40px;
+        height: 40px;
+        font-size: 13px;
+    }
+    
+    .files-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .file-card, .link-card {
+        padding: 18px;
+    }
+    
+    .file-name, .link-title {
+        font-size: 17px;
+    }
+    
+    .user-actions, .catalog-actions, .file-actions, .link-actions, .event-actions {
+        flex-direction: column;
+    }
+    
+    .btn-small {
+        width: 100%;
+    }
+    
+    /* Улучшения для нижней панели */
+    .bottom-nav {
+        padding: 8px 0;
+    }
+    
+    .nav-btn {
+        padding: 6px 8px;
+        min-width: 50px;
+    }
+    
+    .nav-icon {
+        font-size: 18px;
+    }
+    
+    .nav-label {
+        font-size: 9px;
+    }
+    
+    /* Улучшения для мероприятий */
+    .event-card {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .event-time {
+        min-width: auto;
+        text-align: left;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    /* Улучшения для недельного вида */
+    .week-days {
+        gap: 3px;
+    }
+    
+    .week-day {
+        padding: 8px 4px;
+    }
+    
+    .day-name {
+        font-size: 10px;
+    }
+    
+    .day-number {
+        font-size: 14px;
+    }
+    
+    .week-title {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-content {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .user-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .week-days {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+    }
+    
+    .week-day {
+        padding: 6px 2px;
+    }
+    
+    .day-name {
+        font-size: 9px;
+    }
+    
+    .day-number {
+        font-size: 12px;
+    }
+}
+
+/* Улучшения для очень маленьких экранов */
+@media (max-width: 360px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .login-form {
+        padding: 18px;
+    }
+    
+    .modal-content {
+        padding: 18px;
+    }
+    
+    .catalog-item {
+        padding: 16px;
+    }
+    
+    .week-days {
+        grid-template-columns: repeat(7, 1fr);
+    }
+    
+    .week-day {
+        padding: 4px 1px;
+    }
+}
+
+/* Улучшения для элементов форм на мобильных */
+input, select, textarea, button {
+    font-size: 16px !important; /* Предотвращает масштабирование в iOS */
+}
+
+/* Улучшения для touch-интерфейса */
+.catalog-item, .action-btn, .user-list-item, .file-card, .link-card, .event-card {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Улучшения для кнопок на мобильных */
+.btn, .action-btn, .nav-btn, .panel-tab {
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Горизонтальная прокрутка для панели вкладок на маленьких экранах */
+.panel-tabs {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.panel-tabs::-webkit-scrollbar {
+    display: none;
+}

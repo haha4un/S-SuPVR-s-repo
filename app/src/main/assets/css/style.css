@@ -1,0 +1,976 @@
+/* Общие стили */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.5;
+    padding-bottom: 80px; /* Место для нижней панели */
+}
+
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+/* Стили формы входа */
+.login-form {
+    max-width: 100%;
+    margin: 50px auto;
+    padding: 25px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.login-form h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #2c3e50;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    -webkit-appearance: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 14px 20px;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 500;
+}
+
+.btn:hover {
+    background-color: #1a252f;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+/* Стили главного интерфейса */
+.main-interface {
+    display: none;
+}
+
+.header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px 0;
+    margin-bottom: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    font-size: 20px;
+    margin-right: 15px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-name {
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.3s;
+    font-size: 14px;
+}
+
+.user-name:hover {
+    color: #ecf0f1;
+}
+
+.logout-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Нижняя панель навигации */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 8px;
+    min-width: 60px;
+}
+
+.nav-btn.active {
+    background-color: #e8f4fd;
+    color: #3498db;
+}
+
+.nav-btn:hover {
+    background-color: #f8f9fa;
+}
+
+.nav-icon {
+    font-size: 20px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-label {
+    font-size: 10px;
+    font-weight: 500;
+}
+
+/* Контент вкладок */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Стили каталогов */
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.catalog-item {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    border-left: 4px solid #3498db;
+}
+
+.catalog-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.catalog-item h3 {
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-size: 18px;
+}
+
+.catalog-item p {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Стили панели модератора */
+.moderator-panel {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+
+.panel-tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.panel-tab {
+    padding: 12px 18px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    flex-shrink: 0;
+}
+
+.panel-tab.active {
+    border-bottom: 3px solid #2c3e50;
+    font-weight: bold;
+}
+
+.panel-content {
+    display: none;
+}
+
+.panel-content.active {
+    display: block;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.user-list, .catalog-list, .files-list, .events-list {
+    margin-top: 20px;
+}
+
+.user-item, .catalog-item-admin, .file-item, .event-item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+.user-actions, .catalog-actions, .file-actions, .event-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-small {
+    padding: 8px 12px;
+    font-size: 14px;
+    flex: 1;
+    min-width: 100px;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+.btn-success {
+    background-color: #27ae60;
+}
+
+.btn-success:hover {
+    background-color: #219653;
+}
+
+.btn-warning {
+    background-color: #f39c12;
+}
+
+.btn-warning:hover {
+    background-color: #d68910;
+}
+
+/* Стили для аватаров */
+.avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+
+.avatar-small {
+    width: 35px;
+    height: 35px;
+}
+
+.avatar-large {
+    width: 80px;
+    height: 80px;
+}
+
+.avatar-placeholder {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #3498db;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    border: 2px solid #ddd;
+    font-size: 14px;
+}
+
+/* Стили для страницы пользователей */
+.users-page {
+    display: none;
+}
+
+.users-list {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+.user-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    min-height: 70px;
+}
+
+.user-list-item:hover {
+    background-color: #f8f9fa;
+}
+
+.user-list-item:last-child {
+    border-bottom: none;
+}
+
+.user-list-item.current-user {
+    background-color: #e8f4fd;
+    border-left: 4px solid #3498db;
+}
+
+.user-list-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.user-list-name {
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 4px;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-list-details {
+    color: #666;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 5px;
+}
+
+.user-type-deputy {
+    background-color: #e8f4fd;
+    color: #2980b9;
+}
+
+.user-type-assistant {
+    background-color: #f0f8e8;
+    color: #27ae60;
+}
+
+.user-type-moderator {
+    background-color: #f9e8e8;
+    color: #c0392b;
+}
+
+/* Стили для мероприятий - недельный вид */
+.week-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.week-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.week-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.week-day {
+    padding: 12px 8px;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+}
+
+.week-day:hover {
+    background-color: #f8f9fa;
+}
+
+.week-day.active {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+.week-day.today {
+    border-color: #e74c3c;
+}
+
+.week-day.has-events {
+    position: relative;
+}
+
+.week-day.has-events::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 6px;
+    height: 6px;
+    background-color: #e74c3c;
+    border-radius: 50%;
+}
+
+.day-name {
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.day-number {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.date-nav-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+
+.date-nav-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.calendar-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 0 auto;
+}
+
+.calendar-btn:hover {
+    background-color: #2980b9;
+}
+
+.events-list-container {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.event-card {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.event-card:hover {
+    background-color: #f8f9fa;
+}
+
+.event-card:last-child {
+    border-bottom: none;
+}
+
+.event-time {
+    min-width: 80px;
+    text-align: center;
+    padding: 5px;
+}
+
+.event-time-start {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 16px;
+}
+
+.event-time-end {
+    color: #666;
+    font-size: 14px;
+}
+
+.event-details {
+    flex: 1;
+}
+
+.event-title {
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.event-description {
+    color: #666;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.event-participants {
+    color: #666;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.event-location {
+    color: #999;
+    font-size: 13px;
+}
+
+.no-events {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+/* Календарь */
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 15px;
+}
+
+.calendar-day {
+    padding: 10px;
+    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.calendar-day:hover {
+    background-color: #f0f0f0;
+}
+
+.calendar-day.active {
+    background-color: #3498db;
+    color: white;
+}
+
+.calendar-day.other-month {
+    color: #ccc;
+}
+
+.calendar-day.has-events::after {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 4px;
+    background-color: #e74c3c;
+    border-radius: 50%;
+    margin: 2px auto 0;
+}
+
+.calendar-day.today {
+    border: 1px solid #e74c3c;
+}
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+    color: #666;
+}
+
+/* Стили для выбора участников */
+.participants-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.participant-checkbox {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.participant-checkbox:hover {
+    background-color: #e8f4fd;
+}
+
+.participant-checkbox input {
+    margin-right: 10px;
+}
+
+.checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #3498db;
+    border-radius: 3px;
+    margin-right: 10px;
+    position: relative;
+}
+
+.participant-checkbox input:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    top: -2px;
+    left: 2px;
+    color: #3498db;
+    font-weight: bold;
+}
+
+/* Модальные окна */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 25px;
+    border-radius: 12px;
+    max-width: 100%;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    color: #2c3e50;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #666;
+    padding: 5px;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+/* Кнопка добавления каталога */
+.add-catalog-btn, .add-event-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 14px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    justify-content: center;
+}
+
+.add-catalog-btn:hover, .add-event-btn:hover {
+    background-color: #2980b9;
+}
+/* Стили для выбора участников мероприятий */
+.participants-search {
+    margin-bottom: 15px;
+}
+
+.selected-participants {
+    margin-bottom: 20px;
+}
+
+.no-participants {
+    padding: 15px;
+    text-align: center;
+    color: #666;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px dashed #ddd;
+}
+
+.selected-participants-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.selected-participant {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: #27ae60;
+    color: white;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.remove-participant {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-participant:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.participants-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.participant-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.participant-item:last-child {
+    border-bottom: none;
+}
+
+.participant-item:hover {
+    background-color: #e8f4fd;
+}
+
+.participant-item.selected {
+    background-color: #d4edda;
+    border-left: 4px solid #27ae60;
+}
+
+.participant-avatar {
+    flex-shrink: 0;
+}
+
+.participant-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.participant-name {
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 2px;
+    font-size: 14px;
+}
+
+.participant-details {
+    color: #666;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.participant-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #27ae60;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.participant-item:not(.selected) .participant-check {
+    background-color: #95a5a6;
+}
+
+/* Адаптивные стили для выбора участников */
+@media (max-width: 768px) {
+    .selected-participants-list {
+        gap: 6px;
+    }
+    
+    .selected-participant {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+    
+    .participant-item {
+        padding: 10px 12px;
+        gap: 10px;
+    }
+    
+    .participant-name {
+        font-size: 13px;
+    }
+    
+    .participant-details {
+        font-size: 11px;
+    }
+}
