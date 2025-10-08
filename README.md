@@ -5,7 +5,7 @@
 # Deputat
 ###### an encredible app for our city.
 ###### *this app is created for РадиоХак 2.0 by ИРИТ-РТФ.*
-[![*click to download*](https://github.com/haha4un/S-SuPVR-s-repo/blob/master/app/src/main/res/drawable/new_icon.jpg?raw=true "*click to download*")](https://github.com/haha4un/S-SuPVR-s-repo/raw/refs/heads/master/app/build/outputs/apk/debug/app-debug.apk *click to download*)
+[![*click to download*](https://github.com/haha4un/S-SuPVR-s-repo/blob/master/app/src/main/res/drawable/new_icon.jpg?raw=true "*click to download*")]
 
 
 ### Functionality:
