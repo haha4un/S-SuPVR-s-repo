@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LocalFileWebView("deepseek_html_20251006_5d43b1 (2).html")
+            LocalFileWebView("mmm.html")
             }
         }
 }
