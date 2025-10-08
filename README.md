@@ -1,3 +1,7 @@
+# ТЕСТЫ ДЛЯ ПОЛЬЗОВАТЕЛЕЙ: 
+- mail: s.sidorov@permkray.ru password: 123  -- superUser
+- mail: ivanov@permkray.ru password: 123 -- Deputate
+- mail: p.petrov@permkray.ru password: 123 -- assistant 
 # Deputat
 ###### an encredible app for our city.
 ###### *this app is created for РадиоХак 2.0 by ИРИТ-РТФ.*
